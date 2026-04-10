@@ -19,7 +19,8 @@ model User {
   password String 
 
   createdAt DateTime @default(now())
-
+  movies Movie[] @relation("MovieCreator")
+  watchlistItems WatchlistItem[]
 }
 
 model Movie{
@@ -32,6 +33,9 @@ model Movie{
   postedUrl String?
   createdBy String
   createdAt DateTime @default(now())
+
+  Creator User @relation("MovieCreator",fields: [createdBy],references: [id],onDelete: Cascade)
+  watchlistItems WatchlistItem[]
 }
 
 model WatchlistItem{
@@ -43,6 +47,9 @@ rating Int?
 notes String?
 createdAt DateTime @default(now())
 updatedAt DateTime @default(now())
+
+user User @relation(fields:[userId],references: [id],onDelete: Cascade)
+movie Movie @relation(fields: [movieId],references: [id],onDelete: Cascade)
 }
 
 enum WatchlistStatus{
