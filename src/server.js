@@ -1,14 +1,23 @@
-import express from "express";
-import movieRouter from "./Routes/movieRouter.js";
 import { config } from "dotenv";
-import { connectDB, disconnectDB, prisma } from "../config/db.js";
+config();
+
+import express, { urlencoded } from "express";
+import movieRouter from "./Routes/movieRouter.js";
+import authRouter from "./Routes/authRouter.js";
+import { connectDB, disconnectDB } from "./config/db.js";
+
 const app = express();
 const PORT = 8080;
-
-config();
 connectDB();
 
+//Body parsing middleware
+app.use(express.json());
+//parse HTML data sent from HTML forms & make it available in req.body
+app.use(urlencoded({ extended: true }));
+
+// handling API Routes
 app.use("/movies", movieRouter);
+app.use("/auth", authRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
