@@ -4,6 +4,7 @@ config();
 import express, { urlencoded } from "express";
 import movieRouter from "./Routes/movieRouter.js";
 import authRouter from "./Routes/authRouter.js";
+import watchlistRouter from "./Routes/watchlistRouter.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 
 const app = express();
@@ -18,7 +19,7 @@ app.use(urlencoded({ extended: true }));
 // handling API Routes
 app.use("/movies", movieRouter);
 app.use("/auth", authRouter);
-
+app.use("/watchlist", watchlistRouter);
 const server = app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
