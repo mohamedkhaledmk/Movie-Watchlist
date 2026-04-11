@@ -7,7 +7,10 @@ import {
 } from "../Controllers/watchlistController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
-import { addToWatchlistSchema } from "../middlewares/watchlistValidators.js";
+import {
+  addToWatchlistSchema,
+  updateWatchlistSchema,
+} from "../middlewares/watchlistValidators.js";
 
 const router = express.Router();
 
@@ -19,6 +22,9 @@ router
   .get(getWatchlist)
   .post(validateRequest(addToWatchlistSchema), addToWatchlist);
 
-router.route("/:id").put(updateWatchlist).delete(removeFromWatchlist);
+router
+  .route("/:id")
+  .put(validateRequest(updateWatchlistSchema), updateWatchlist)
+  .delete(removeFromWatchlist);
 
 export default router;
