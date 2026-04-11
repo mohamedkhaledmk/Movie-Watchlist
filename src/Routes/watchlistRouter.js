@@ -3,11 +3,16 @@ import {
   addToWatchlist,
   getWatchlist,
   removeFromWatchlist,
+  updateWatchlist,
 } from "../Controllers/watchlistController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+// Apply authentication middleware to all routes in this router
+router.use(authMiddleware);
+
 router.route("/").get(getWatchlist).post(addToWatchlist);
-router.route("/:id").delete(removeFromWatchlist);
+router.route("/:id").put(updateWatchlist).delete(removeFromWatchlist);
 
 export default router;

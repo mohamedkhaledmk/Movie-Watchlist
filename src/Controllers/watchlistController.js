@@ -22,4 +22,22 @@ export const addToWatchlist = async (req, res) => {
 
   res.status(201).json({ status: "success", data: { watchlistItem } });
 };
+
+export const updateWatchlistItem = async (req, res) => {
+  const { id } = req.params;
+  const { status, rating, notes } = req.body;
+  const watchlistItem = await prisma.watchlistItem.findUnique({
+    where: { id: parseInt(id) },
+  });
+  if (!watchlistItem)
+    return res.status(404).json({ error: "Watchlist item not found" });
+  const updatedWatchlistItem = await prisma.watchlistItem.update({
+    where: { id: parseInt(id) },
+    data: { status, rating, notes },
+  });
+  res
+    .status(200)
+    .json({ status: "success", data: { watchlistItem: updatedWatchlistItem } });
+};
+
 export const removeFromWatchlist = async (req, res) => {};
