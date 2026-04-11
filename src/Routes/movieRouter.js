@@ -1,25 +1,17 @@
 import express from "express";
-
+import { prisma } from "../config/db";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import {
+  addMovie,
+  getAllMovies,
+  updateMovie,
+  deleteMovie,
+} from "../Controllers/movieController.js";
 const router = express.Router();
 
-router.get("/hello", (req, res) => {
-  res.status(200).json({ message: "Hello from movie Router..." });
-});
+router.use(authMiddleware);
 
-router.get("/", (req, res) => {
-  res.json({ httpMethod: "get" });
-});
-
-router.post("/", (req, res) => {
-  res.json({ httpMethod: "post" });
-});
-
-router.put("/", (req, res) => {
-  res.json({ httpMethod: "put" });
-});
-
-router.delete("/", (req, res) => {
-  res.json({ httpMethod: "delete" });
-});
+router.route("/").get(getAllMovies).post(addMovie);
+router.delete("/:id", deleteMovie);
 
 export default router;
