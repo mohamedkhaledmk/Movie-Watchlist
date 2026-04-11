@@ -30,7 +30,7 @@ model Movie{
   releaseYear Int
   genres String[] @default([])
   runtime Int?
-  postedUrl String?
+  posterUrl String?
   createdBy String
   createdAt DateTime @default(now())
 
