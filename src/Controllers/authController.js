@@ -29,6 +29,24 @@ const register = async (req, res) => {
     .json({ status: "success", data: { user: { id: user.id, name, email } } });
 };
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { email: email } });
+
+  if (!user)
+    return res
+      .status(404)
+      .json({ error: "There is no user registered with this email!" });
+
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect)
+    return res.status(400).json({ error: "Invalid password!" });
+
+  return res.status(200).json({
+    status: "success",
+    data: { user: { id: user.id, name: user.name, email } },
+  });
+};
 
 export { register, login };
