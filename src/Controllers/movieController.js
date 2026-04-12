@@ -1,3 +1,5 @@
+import { prisma } from "../config/db.js";
+
 const getAllMovies = async (req, res) => {
   try {
     const movies = await prisma.movie.findMany();
@@ -9,15 +11,17 @@ const getAllMovies = async (req, res) => {
 };
 
 const addMovie = async (req, res) => {
-  const { title, releaseYear, genre } = req.body;
+  const { title, releaseYear, genres } = req.body;
   try {
     const newMovie = await prisma.movie.create({
       data: {
         title,
         releaseYear,
-        genre,
+        genres,
+        createdBy: req.user?.id,
       },
     });
+
     res.status(201).json({ status: "success", data: newMovie });
   } catch (err) {
     console.error(err);
@@ -27,7 +31,7 @@ const addMovie = async (req, res) => {
 
 const updateMovie = async (req, res) => {
   const { id } = req.params;
-  const { title, releaseYear, genre } = req.body;
+  const { title, releaseYear, genres } = req.body;
   const userId = req.user?.id;
 
   try {
@@ -37,8 +41,8 @@ const updateMovie = async (req, res) => {
         .status(404)
         .json({ status: "error", message: "Movie not found" });
     }
-
-    if (movieExists.userId !== userId) {
+    console.log(movieExists, userId);
+    if (movieExists.createdBy != userId) {
       return res.status(403).json({
         status: "error",
         message: "Forbidden: You don't have permission to update this movie",
@@ -50,7 +54,7 @@ const updateMovie = async (req, res) => {
       data: {
         title,
         releaseYear,
-        genre,
+        genres,
       },
     });
 
@@ -71,7 +75,7 @@ const deleteMovie = async (req, res) => {
         .status(404)
         .json({ status: "error", message: "Movie not found" });
     }
-    if (movieExists.userId !== userId) {
+    if (movieExists.createdBy != userId) {
       return res.status(403).json({
         status: "error",
         message: "Forbidden: You don't have permission to delete this movie",
