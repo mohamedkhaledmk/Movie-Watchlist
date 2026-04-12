@@ -1,5 +1,4 @@
 import express from "express";
-import { prisma } from "../config/db";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import {
   addMovie,
@@ -12,6 +11,6 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.route("/").get(getAllMovies).post(addMovie);
-router.delete("/:id", deleteMovie);
+router.route("/:id").put(updateMovie).delete(deleteMovie);
 
 export default router;
